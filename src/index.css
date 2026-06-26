@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: "Kinken";
+    src: url(./assets/fonts/Kinken.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Winked";
+    src: url(./assets/fonts/Winked.otf) format("opentype");
+}
+@font-face {
+    font-family: "Homush";
+    src: url(./assets/fonts/homush.otf) format("opentype");
+}
+@font-face {
+    font-family: "Kayana";
+    src: url(./assets/fonts/kayana-regular.otf) format("opentype");
+}
+
+@theme {
+  --font-kinken: "Kinken", sans-serif;
+  --font-winked: "Winked", sans-serif;
+  --font-homush: "Homush", sans-serif;
+  --font-kayana: "Kayana", sans-serif;
+}
+
