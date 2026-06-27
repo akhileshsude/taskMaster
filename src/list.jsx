@@ -1,12 +1,6 @@
-import react, { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-export default function List({ newTask, editTask, editedTask }) {
-  const [todo, SetTodo] = useState([
-    { id: 1, text: "Learn React", isCompleted: false },
-    { id: 2, text: "Learn C++", isCompleted: false },
-    { id: 3, text: "Learn Node JS", isCompleted: false },
-  ]);
-
+export default function List({ newTask, editTask, editedTask, todo, setTodo }) {
   useEffect(() => {
     if (newTask) {
       const newTodo = {
@@ -14,37 +8,56 @@ export default function List({ newTask, editTask, editedTask }) {
         text: newTask,
         isCompleted: false,
       };
-      SetTodo([...todo, newTodo]);
+      setTodo((prev) => [...prev, newTodo]);
     }
-  }, [newTask]);
+  }, [newTask, setTodo]);
 
   useEffect(() => {
     if (editedTask) {
-      const updatedTodo = todo.map((item) => {
-        if (item.id == editedTask.id) {
-          item.text = editedTask.text;
-        }
-      });
-      SetTodo(updatedTodo);
+      setTodo((prev) =>
+        prev.map((item) =>
+          item.id === editedTask.id ? { ...item, text: editedTask.text } : item,
+        ),
+      );
     }
-  }, [editedTask]);
+  }, [editedTask, setTodo]);
 
-  let handleDelete = (id) => {
-    const updatedTodo = todo.filter((item) => item.id !== id);
-    SetTodo(updatedTodo);
+  const handleDelete = (id) => {
+    setTodo((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const toggleComplete = (id) => {
+    setTodo((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, isCompleted: !item.isCompleted } : item,
+      ),
+    );
   };
 
   return (
     <div className="list p-4">
-      <h1 className="text-5xl m-3 text-[#ffffffda]">To-Do List</h1>
+      <h1 className="text-[2vw] text-[#ffffffda]">My Tasks</h1>
       <br />
       {todo.map((item) => (
         <div
           key={item.id}
-          className="bg-gray-400 rounded-2xl m-3 p-2 w-90 flex items-center justify-between"
+          className=" rounded-2xl m-3 p-2 flex items-center justify-between font-kayana bg-[#1b1b1bed] w-[70vw]"
         >
-          <h1 className="m-2 text-2xl">{item.text}</h1>
-          <div>
+          <div className="flex flex-row px-5 justify-center items-center">
+            <input
+              type="checkbox"
+              checked={item.isCompleted}
+              className="peer h-7 w-7 appearance-none rounded-full border-2 checked:border-zinc-600 bg-transparent transition-all duration-200 cursor-pointer border-cyan-400 checked:bg-cyan-400/10 hover:border-zinc-400 "
+              onChange={() => toggleComplete(item.id)}
+            />
+            <h1
+              className={`m-2 text-[1.3vw] px-4 p-1 ${item.isCompleted ? "text-gray-400 line-through" : "text-white"}`}
+            >
+              {item.text}
+            </h1>
+          </div>
+
+          <div className="flex flex-row gap-5">
             <button
               className="bg-[#2649ba] p-1 px-2 rounded-xl text-right"
               onClick={() => editTask(item)}
@@ -60,6 +73,33 @@ export default function List({ newTask, editTask, editedTask }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+export function Overview({ todos = [] }) {
+  const total = todos.length;
+  const completed = todos.filter((item) => item.isCompleted).length;
+  const pending = total - completed;
+
+  return (
+    <div className="action-box bg-[#1b1b1bed] rounded-3xl px-4 h-auto w-full flex flex-col gap-3 border border-gray-700 shadow-2xl font-homush justify-center py-8">
+      <h2 className="text-[1.5vw] mb-3">overview</h2>
+      <div className="flex flex-row justify-between">
+        <p>Total</p>
+        <p>{total}</p>
+      </div>
+
+      <hr />
+      <div className="flex flex-row justify-between">
+        <p>Pending</p>
+        <p>{pending}</p>
+      </div>
+      <hr />
+      <div className="flex flex-row justify-between">
+        <p>Completed</p>
+        <p>{completed}</p>
+      </div>
     </div>
   );
 }
